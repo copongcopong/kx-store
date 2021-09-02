@@ -3,12 +3,12 @@ var kxStore = require('./index.js');
 var dd = kxStore({foo: 1});
 
 //dd.ev.on('*', (p) => console.log(p));
-dd.observe('bar.*', function(ev){
-  console.log("=====");
-  console.log(ev);
-  console.log(this.data);
+dd.observe('bar.*', function(ev) {
+  console.log("\n===== observing bar.* ====");
+  console.log("event is", ev);
+  console.log("data is", this.data);
   
-  console.log("=== e ==");
+  console.log("=== end ===\n");
   
 });
 var yeahFunc = function (ev) { 
@@ -24,14 +24,22 @@ dd.on('yeah', yeahFunc2);
 dd._ev.on('_ev.heary', function hr(){})
 
 setTimeout(() => {
+  console.log(`run>> dd.data.bar = []`);
   dd.data.bar = [];
+  console.log(`run>> dd.data.bar.push('q')`);
   dd.data.bar.push('q');
+  console.log(`run>> dd.data.bar.push('a')`);
   dd.data.bar.push('a');
+  console.log(`run>> dd.data.bar.push({one: 1})`);
   dd.data.bar.push({one: 1});
+  console.log(`run>> dd.data.bar[0] = 'q'`);
   dd.data.bar[0] = 'q';
+  console.log(`run>> dd.data.bar[1] = 'q'`);
   dd.data.bar[1] = 'q';
+  console.log(`run>> dd.data.bar[1] = 'q'`);
   dd.data.bar[1] = 'q';
-  dd.set('bar.3', 'e', (v) => {console.log("set"); console.log(v);});
+
+  dd.set('bar.3', 'e', (v) => {console.log("set `bar.3` to `e`\n"); console.log(`data value is`, v);});
   dd.get('bar.2', (v) => {console.log("get"); console.log(v);});
   console.log(dd.data);
 }, 200);
@@ -39,32 +47,32 @@ setTimeout(() => {
 setTimeout(() => {
   
   dd.observe("myvar", function(ev){
-    console.log("myvar listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
+    console.log("\nmyvar listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
   });
 
   dd.observe("myvar.**", function(ev){
-    console.log("myvar-ALL listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
+    console.log("\nmyvar-ALL listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
   });
 
   dd.observe("myvar.seven", function(ev){
-    console.log("myvar.seven listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
+    console.log("\nmyvar.seven listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
   });
 
   dd.observe("myvar.otso", function(ev){
-    console.log("myvar.otso listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
+    console.log("\nmyvar.otso listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
   });
   dd.observe("myvar.otso.*", function(ev){
-    console.log("myvar.otso.* listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
+    console.log("\nmyvar.otso.* listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
   });
   
   dd.observe("myvar.otso.**", function(ev){
-    console.log("myvar.otso.** listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
+    console.log("\nmyvar.otso.** listener " + JSON.stringify({old: ev.old, curr: ev.value, p: ev.path}));
   });
    
   dd.data.myvar = 100;
   
   console.log(dd.data);
-  console.log(" oO.isObservable " + dd._oO.isObservable(dd.data));
+  console.log("\n>> oO.isObservable " + dd._oO.isObservable(dd.data));
   dd.data.myvar = 200;
   dd.data.myvar = [];
   dd.data.myvar = [1,2,3];
@@ -98,9 +106,11 @@ setTimeout(() => {
   dd.fire("ss");
   dd.fire("ss");
   
-  console.log("ALL _ev!!!");
+  console.log("\n ==== ALL _ev!!!");
   
   console.log(dd._ev.listeners('_ev.*'));
+
+  console.log("\n ==== ====");
   
   dd.off("ssh", ssh);
   

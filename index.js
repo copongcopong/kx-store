@@ -37,7 +37,8 @@ function emitUpdate(emitter, ev, evOld) {
 function kxStore(data) {
   var emitter = new EventEmitter2({
     wildcard: true,
-    verbose: true
+    verbose: true,
+    removeListener: true
   });
   
   var oData;
@@ -80,7 +81,17 @@ function kxStore(data) {
     },
     
     observe: (path, cb) => {
-      emitter.on(root._evPre.data + path, (ev) => cb.call(root, ev));
+      var cbb = cb.bind(root);
+      //emitter.on(root._evPre.data + path, (ev) => cb.call(root, ev));
+      emitter.on(root._evPre.data + path, cbb);
+      return cbb;
+    },
+    observeOff: (k, cbb) => {
+      if (!cbb) cbb = function(){};
+      emitter.removeListener(root._evPre.data + k, cbb);
+    },
+    observeOffAll: (k) => {
+      emitter.removeAllListeners(root._evPre.data + k);
     },
     observeOnce: (path, cb) => {
       emitter.once(root._evPre.data + path, (ev) => cb.call(root, ev));
@@ -97,11 +108,11 @@ function kxStore(data) {
       emitter.emit(root._evPre.ev + k, ev);
     },
     off: (k, cbb) => {
+      if (!cbb) cbb = function(){};
       emitter.removeListener(root._evPre.ev + k, cbb);
     },
-    offAll: (k, cb) => {
-      if(!cb) cb = function(){};
-      emitter.removeAllListeners(root._evPre.ev + k, cb);
+    offAll: (k) => {
+      emitter.removeAllListeners(root._evPre.ev + k);
     },
     _ev: emitter,
     _evPre: evPre,
